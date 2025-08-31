@@ -1,0 +1,305 @@
+/* Reset */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f6fa;
+  color: #333;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background-color: #1e1e2f;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 2px solid #333;
+}
+
+.sidebar h3 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+.sidebar button,
+.sidebar li {
+  background: none;
+  border: none;
+  color: #ddd;
+  font-size: 1rem;
+  padding: 0.5rem 0.8rem;
+  margin: 0.2rem 0;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  list-style-type: none;
+}
+
+.sidebar button:hover,
+.sidebar li:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  border: 2px solid #333;
+}
+
+.main h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.main ul {
+  list-style: none;
+}
+
+.main li {
+  background: #fff;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main li span.details {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Priority colors */
+.priority-high {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.priority-medium {
+  color: #f39c12;
+}
+
+.priority-low {
+  color: #27ae60;
+}
+
+/* === General Task List Styling === */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Checkbox and label */
+.task-checkbox {
+  margin-right: 10px;
+  transform: scale(1.2); /* make it a bit larger */
+  cursor: pointer;
+}
+
+.task-text {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+/* Completed tasks */
+.task-checkbox:checked + .task-text {
+  text-decoration: line-through;
+  color: #888;
+}
+
+/* Buttons */
+.delete-btn, .edit-btn, .view-btn {
+  margin-left: 10px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-btn {
+  background: #ff6b6b;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #e63946;
+}
+
+.edit-btn {
+  background: #4dabf7;
+  color: white;
+
+}
+
+.edit-btn:hover {
+  background: #1c7ed6;
+}
+
+.view-btn {
+  border: 2px solid #1e1e2f;
+  color: #1e1e2f;
+  background-color: transparent;
+}
+
+.view-btn:hover {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
+.todo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 30, 47, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center; /* match sidebar color, more opaque */
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.todo-form {
+  background: #fff;
+  margin: 2rem 0;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  min-width: 420px;
+  width: 92%;
+  display:flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 8px 32px rgba(30, 30, 47, 0.18);
+  border: 2px solid #1e1e2f; /* match sidebar border */
+  animation: fadeInUp 0.25s ease;
+}
+
+.todo-form h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e1e2f; /* sidebar color */
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.todo-form label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 1rem;
+  color: #222;
+  letter-spacing: 0.5px;
+}
+
+.todo-form input,
+.todo-form textarea,
+.todo-form select {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: #f5f6fa;
+  color: #222;
+  transition: border 0.2s, box-shadow 0.2s;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.todo-form select option {
+  width: 100%;
+  display: flex;
+}
+
+
+.todo-form input:focus,
+.todo-form textarea:focus,
+.todo-form select:focus {
+  border-color: #4dabf7; /* accent blue */
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.15);
+}
+
+.todo-btn-div {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  background: #eee;
+  color: #333;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #ddd;
+}
+
+.add-btn {
+  background: #1e1e2f; /* sidebar color */
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(30, 30, 47, 0.08);
+}
+
+.add-btn:hover {
+  background: #4dabf7; /* accent blue */
+  color: #fff;
+}
+
+/* Subtle entrance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

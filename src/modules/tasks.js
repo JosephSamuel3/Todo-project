@@ -10,32 +10,19 @@ export class Task {
     this.projectId = projectId || null;
   }
 
-  toggleComplete() {
+   setCompletion() {
     this.completed = !this.completed;
+    return this.completed;
   }
 
   setPriority(newlevel) {
     const validLevels = ["low", "medium", "high"];
     if (validLevels.includes(newlevel)) {
-        this.priority = newlevel;
+      this.priority = newlevel;
     }
   }
 
   updateDetails(details) {
     this.details = details;
   }
-}
-
-// Utility helpers
-export function isOverdue(task) {
-  return task.dueDate && new Date(task.dueDate) < new Date() && !task.completed;
-}
-
-export function isToday(task) {
-  const today = new Date().toDateString();
-  return task.dueDate && new Date(task.dueDate).toDateString() === today;
-}
-
-export function isUpcoming(task) {
-  return task.dueDate && new Date(task.dueDate) > new Date();
 }

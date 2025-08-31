@@ -30,10 +30,10 @@ export class Project {
     updateTask(taskId, updatedFields) {
         const taskToUpdate = this.getTaskId(taskId);
         if (taskToUpdate) {
-            if(updatedFields.title) taskToUpdate.title = updatedFields.title;
-            if(updatedFields.details) taskToUpdate.details = updatedFields.details;
-            if(updatedFields.dueDate) taskToUpdate.dueDate = updatedFields.dueDate;
-            if(updatedFields.priority) taskToUpdate.setPriority(updatedFields.priority);
+            if (updatedFields.title) taskToUpdate.title = updatedFields.title;
+            if (updatedFields.details) taskToUpdate.details = updatedFields.details;
+            if (updatedFields.dueDate) taskToUpdate.dueDate = updatedFields.dueDate;
+            if (updatedFields.priority) taskToUpdate.setPriority(updatedFields.priority);
             return true;
         }
         return false;

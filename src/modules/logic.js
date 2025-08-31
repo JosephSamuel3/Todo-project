@@ -54,6 +54,16 @@ class Logic {
     return this.tasks;
   }
 
+  toggleTaskCompletion(taskId) {
+    const task = this.tasks.find(t => t.id === taskId);
+    if (task) {
+      task.setCompletion();
+      this.saveToStorage();
+      return task.completed;
+    }
+  }
+
+
   // 🔑 Persistence
   saveToStorage() {
     const data = {

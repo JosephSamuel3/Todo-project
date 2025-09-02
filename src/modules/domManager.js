@@ -1,3 +1,4 @@
+import trash from "../asset/trash-can-outline.svg"
 import { logic } from "./logic.js";
 
 export class DOMManager {
@@ -13,10 +14,10 @@ export class DOMManager {
             <button id="add-todo-btn">+ Add Todo</button>
             <h3>Views</h3>
             <ul>
-                <li data-filter="all">All Tasks</li>
-                <li data-filter="today">Today</li>
-                <li data-filter="upcoming">Upcoming</li>
-                <li data-filter="overdue">Overdue</li>
+                <li data-filter="All Tasks">All Tasks</li>
+                <li data-filter="Today">Today</li>
+                <li data-filter="Upcoming">Upcoming</li>
+                <li data-filter="Overdue">Overdue</li>
             </ul>
             <h3>Projects</h3>
             <ul id="project-list"></ul>
@@ -27,59 +28,158 @@ export class DOMManager {
         this.bindSidebarEvents();
     }
 
-    renderTasks(tasks) {
+    renderProjects() {
+        const ul = document.getElementById("project-list");
+        if (!ul) return;
+
+        ul.innerHTML = ""; // clear existing list
+
+        logic.projects.forEach(project => {
+            const li = document.createElement("li");
+            li.classList.add("project-item");
+            li.dataset.id = project.id;
+
+            // project name span
+            const nameSpan = document.createElement("span");
+            nameSpan.textContent = project.name;
+
+            // delete button
+            const deleteBtn = document.createElement("div");
+            deleteBtn.classList.add("delete-project-btn");
+
+            // clicking project name loads tasks
+            nameSpan.addEventListener("click", () => {
+                const tasks = logic.getTasksByProject(project.id);
+                this.renderTasks(tasks, project.name);
+            });
+
+            // clicking delete button removes project
+            deleteBtn.addEventListener("click", (e) => {
+                e.stopPropagation(); // don’t trigger li click
+                logic.removeProject(project.id);
+                this.renderProjects();
+                this.refresh() // re-render project list
+            });
+
+            li.appendChild(nameSpan);
+            li.appendChild(deleteBtn);
+            ul.appendChild(li);
+        });
+    }
+
+    createTaskElement(task) {
+        const li = document.createElement("li");
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.checked = task.completed;
+        input.id = `task-${task.id}`;
+        input.dataset.id = task.id;
+        input.classList.add("task-checkbox");
+
+        const label = document.createElement("label");
+        label.classList.add("task-text");
+        label.setAttribute("for", `task-${task.id}`);
+
+        const dot = document.createElement("span");
+        dot.classList.add("priority-dot", `priority-${task.priority || "default"}`);
+
+        label.appendChild(dot);
+        label.appendChild(document.createTextNode(`${task.title} - ${task.dueDate || "No Date"}`));
+
+        if (task.completed) label.classList.add("completed");
+
+        // buttons
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.dataset.id = task.id;
+
+        const viewBtn = document.createElement("button");
+        viewBtn.textContent = "View";
+        viewBtn.classList.add("view-btn");
+        viewBtn.dataset.id = task.id;
+
+        // attach event listeners
+        input.addEventListener("change", () => {
+            const isCompleted = logic.toggleTaskCompletion(task.id);
+            label.classList.toggle("completed", isCompleted);
+        });
+
+        deleteBtn.addEventListener("click", () => {
+            logic.removeTask(task.id);
+            this.refresh(); // re-render after delete
+        });
+
+        viewBtn.addEventListener("click", () => {
+            this.viewTask(task); // custom modal function
+        });
+
+        li.appendChild(input);
+        li.appendChild(label);
+        li.appendChild(deleteBtn);
+        li.appendChild(viewBtn);
+
+        return li;
+    }
+
+    viewTask(task){
+        const existingTaskModal = document.querySelector('.view-todo-modal');
+        if (existingTaskModal) existingTaskModal.remove();
+    
+        // Modal overlay
+        const overlay = document.createElement('div');
+        overlay.classList.add('modal-overlay');
+    
+        // Modal content
+        const viewModal = document.createElement('div');
+        viewModal.classList.add('view-todo-modal');
+    
+        // Priority color
+        const priorityDot = `<span class="priority-dot priority-${task.priority || "default"}"></span>`;
+    
+        viewModal.innerHTML = `
+            <div class="modal-header">
+                <h2>${priorityDot}${task.title}</h2>
+                <button class="close-modal-btn" title="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div><strong>Details:</strong></div>
+                <div>${task.details || "No details provided."}</div>
+                <div style="margin-top:1em;"><strong>Due Date:</strong> ${task.dueDate || "No date"}</div>
+                <div><strong>Priority:</strong> ${task.priority}</div>
+                ${task.projectId ? `<div><strong>Project:</strong> ${logic.getProjectName(task.projectId)}</div>` : ""}
+            </div>
+        `;
+    
+        overlay.appendChild(viewModal);
+        document.body.appendChild(overlay);
+    
+        // Close button event
+        viewModal.querySelector('.close-modal-btn').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) overlay.remove();
+        });
+    }
+
+    renderTasks(tasks, headerText = 'All Tasks') {
         const main = document.querySelector(".main") || document.createElement("div");
-        main.classList.add("main");
-        main.innerHTML = "<h2>Tasks</h2>";
-        
+        main.classList.add("main")
+        if(!main) return;
+
+        main.innerHTML = "";
+
+        // Header
+        const header = document.createElement("h2");
+        header.textContent = headerText;
+        main.appendChild(header);
+
+        // Task list
         const ul = document.createElement("ul");
+        ul.classList.add("task-list");
 
         tasks.forEach(task => {
-            const li = document.createElement("li");
-
-            const input = document.createElement("input");
-            input.type = "checkbox";
-            input.checked = task.completed;
-            input.id = `task-${task.id}`;
-            input.dataset.id = task.id;
-            input.classList.add("task-checkbox");
-
-            const label = document.createElement("label");
-            label.classList.add("task-text");
-            label.setAttribute("for", `task-${task.id}`);
-            label.textContent = `${task.title} (${task.priority}) - ${task.dueDate || "No Date"}`;
-
-            input.addEventListener("change", () => {
-                const isCompleted = logic.toggleTaskCompletion(task.id);
-                if (isCompleted) {
-                    label.classList.add("completed");
-                } else {
-                    label.classList.remove("completed");
-                }
-            })
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Delete";
-            deleteBtn.classList.add("delete-btn");
-            deleteBtn.dataset.id = task.id;
-
-            const editBtn = document.createElement("button");
-            editBtn.textContent = "Edit";
-            editBtn.classList.add("edit-btn");
-            editBtn.dataset.id = task.id;
-
-            const viewBtn = document.createElement("button");
-            viewBtn.textContent = "View";
-            viewBtn.classList.add("view-btn");
-            viewBtn.dataset.id = task.id;
-
-            li.appendChild(input);
-            li.appendChild(label);
-            li.appendChild(deleteBtn);
-            li.appendChild(editBtn);
-            li.appendChild(viewBtn);
-
-            ul.appendChild(li);
+            ul.appendChild(this.createTaskElement(task));
         });
 
         main.appendChild(ul);
@@ -99,8 +199,10 @@ export class DOMManager {
             el.addEventListener("click", () => {
                 const filter = el.dataset.filter;
                 const tasks = logic.getTasksByFilter(filter);
-                this.renderTasks(tasks);
+                this.renderTasks(tasks, filter);
         });
+
+
         
             document.getElementById("add-todo-btn").addEventListener("click", () => {
             this.addTodoModal();
@@ -109,6 +211,9 @@ export class DOMManager {
     }
 
     addTodoModal() {
+        const existingModal = document.querySelector(".todo-modal");
+        if (existingModal) existingModal.remove();
+
         const modal = document.createElement("div");
         modal.classList.add("todo-modal");
         modal.innerHTML = `
@@ -120,13 +225,13 @@ export class DOMManager {
                 <textarea id="todo-details" placeholder="Description"></textarea>
                 <label for="todo-priority">Priority:</label>
                 <select id="todo-priority" required>
-                    <option value="">Priority</option>
+                    <option value="" selected disable hidden>Priority</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                 </select>
                 <label for="todo-due">Due Date:</label>
-                <input type="datetime-local" id="todo-due" />
+                <input type="date" id="todo-due" />
                 <label for="todo-project">Project:</label>
                 <select id="todo-project">
                     <option value="">Assign to Project (optional)</option>
@@ -140,27 +245,28 @@ export class DOMManager {
 
         document.body.appendChild(modal);
 
-        document.getElementById("cancel-todo-btn").onclick = () => modal.remove();
+        modal.querySelector("#cancel-todo-btn").addEventListener('click', () => modal.remove());
 
-        document.getElementById("todo-form").onsubmit = (e) => {
+        modal.querySelector("#todo-form").addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = document.getElementById("todo-title").value.trim();
-            const details = document.getElementById("todo-details").value.trim();
-            const priority = document.getElementById("todo-priority").value;
-            const dueDate = document.getElementById("todo-due").value;
-            const projectId = document.getElementById("todo-project").value || null;
+            const title = modal.querySelector("#todo-title").value.trim();
+            const details = modal.querySelector("#todo-details").value.trim();
+            const priority =modal.querySelector("#todo-priority").value;
+            const dueDate = modal.querySelector("#todo-due").value;
+            const projectId = modal.querySelector("#todo-project").value || null;
 
-            if (!title || !priority) return;
+            if (!title || !priority || !dueDate) return;
 
             logic.addTask(title, details, dueDate, priority, projectId);
             modal.remove();
             this.refresh();
-        };
+        });
     }
 
     refresh() {
         this.root.innerHTML = "";
         this.renderSidebar();
+        this.renderProjects();
         this.renderTasks(logic.tasks);
     }
 }

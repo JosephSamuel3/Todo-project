@@ -14,15 +14,4 @@ export class Task {
     this.completed = !this.completed;
     return this.completed;
   }
-
-  setPriority(newlevel) {
-    const validLevels = ["low", "medium", "high"];
-    if (validLevels.includes(newlevel)) {
-      this.priority = newlevel;
-    }
-  }
-
-  updateDetails(details) {
-    this.details = details;
-  }
 }

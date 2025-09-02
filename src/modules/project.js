@@ -40,11 +40,3 @@ export class Project {
     }
 
 }
-
-function createProject(name) {
-    return new Project(name);
-}
-
-function deleteProject(projects, projectId) {
-    return projects.filter(project => project.id !== projectId);
-}

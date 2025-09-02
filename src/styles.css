@@ -89,19 +89,32 @@ body {
   color: #666;
 }
 
-/* Priority colors */
-.priority-high {
-  color: #e74c3c;
-  font-weight: bold;
-}
-
-.priority-medium {
-  color: #f39c12;
+.priority-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .priority-low {
-  color: #27ae60;
+  background-color: green;
 }
+
+.priority-medium {
+  background-color: orange;
+}
+
+.priority-high {
+  background-color: red;
+}
+
+.priority-default {
+  background-color: gray;
+}
+
+
 
 /* === General Task List Styling === */
 ul {
@@ -237,9 +250,9 @@ li {
   width: 100%;
 }
 
-.todo-form select option {
+.todo-form select{
   width: 100%;
-  display: flex;
+  display: block;
 }
 
 
@@ -290,6 +303,61 @@ li {
 .add-btn:hover {
   background: #4dabf7; /* accent blue */
   color: #fff;
+}
+
+/* Add to your main CSS file */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.view-todo-modal {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    padding: 2em;
+    min-width: 320px;
+    max-width: 90vw;
+    color: #222;
+    font-family: inherit;
+    position: relative;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1em;
+}
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 2em;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.2s;
+}
+.close-modal-btn:hover {
+    color: #e74c3c;
+}
+.modal-body {
+    font-size: 1em;
+}
+
+.delete-project-btn{
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #ddd;
+  -webkit-mask: url(asset/trash-can-outline.svg) no-repeat;
+  mask: url(asset/trash-can-outline.svg) no-repeat;
+}
+
+.delete-project-btn:hover{
+  background-color: #e63946;
 }
 
 /* Subtle entrance animation */

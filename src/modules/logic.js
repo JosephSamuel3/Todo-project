@@ -31,7 +31,12 @@ class Logic {
     if (project) project.addTask(task);
 
     this.saveToStorage();
-    return task;
+    return task
+  }
+
+  getProjectName(taskId){
+    const project = this.projects.find(p => p.id === taskId);
+    return project ? project.name : "#default";
   }
 
   removeTask(taskId) {
@@ -40,15 +45,19 @@ class Logic {
     this.saveToStorage();
   }
 
+  getTasksByProject(projectId){
+    return this.tasks.filter(task => task.projectId === projectId)
+  }
+
   getTasksByFilter(filter) {
     const today = new Date().toDateString();
-    if (filter === "today") {
+    if (filter === "Today") {
       return this.tasks.filter(t => t.dueDate && new Date(t.dueDate).toDateString() === today);
     }
-    if (filter === "upcoming") {
+    if (filter === "Upcoming") {
       return this.tasks.filter(t => t.dueDate && new Date(t.dueDate) > new Date());
     }
-    if (filter === "overdue") {
+    if (filter === "Overdue") {
       return this.tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && !t.completed);
     }
     return this.tasks;
